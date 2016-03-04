@@ -34,7 +34,7 @@ public class FiniteStateMachine<T> // <T> Generic
         return CurrentState;
     }
 
-    public void AddState(T t)                           //[Function]// Add a Generic to StateList
+    private void AddState(T t)                           //[Function]// Add a Generic to StateList
     {
         StateList.Add(t);
     }

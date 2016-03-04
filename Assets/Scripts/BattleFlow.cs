@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class BattleFlow : MonoBehaviour
 {
-    List<Unit> battleUnits;
+    List<Combat.Unit> battleUnits;
     int currentTurnIndex = 0;
 
     // Use this for initialization
