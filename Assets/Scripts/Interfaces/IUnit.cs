@@ -1,9 +1,7 @@
 ﻿interface IUnit<T>
 {
     FiniteStateMachine<T> fsm
-    {
-        get;  
-    }
+    { get; }
 
     void SetupMachine();
     void onHit();
@@ -12,11 +10,9 @@
     void onStart();
     void onInit();
 
+    // Unit Stats
     float MaxHealth
-    {
-        get;
-        set;
-    }
+    { get; set; }
     float Health
     { get; set; }
     float Attack
@@ -26,7 +22,7 @@
     float Speed
     { get; set; }
     bool Alive
-     { get; set; } 
+    { get; set; } 
 }
 
 

@@ -1,6 +1,8 @@
-﻿using UnityEngine; 
-using System;
+﻿using System;
+using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+
 namespace Combat 
 {//this is a user
     public enum UnitState
@@ -10,30 +12,49 @@ namespace Combat
         SELECTION,
         TARGET,
         RESOLVE,
-        END,
+        END
     }
+
     /// <summary>
     /// Participates in combat
     /// contains stats for member
     /// </summary>
     public class Unit : MonoBehaviour, IUnit<UnitState>
     {
+        //simulate some input,  Only for testing 
+        public float  mhp,  hp,  atk,  def,  spd;
+        bool  alv;
+
+        //this is the actual value
+        private float _mhp, _hp, _atk, _def, _spd;
+        bool _alv;
+
+        private FiniteStateMachine<UnitState> _fsm;
+        public UnitState c_State;
+
+        private Dictionary<UnitState, Callback> stateCallbacks = new Dictionary<UnitState, Callback>();
+
+        // MonoBehaviour, i want this gone
         void Start()
         {
             RegisterCallback(UnitState.INIT, onInit);
             RegisterCallback(UnitState.START, onStart);
         }
-        //stats
+
+        /// <summary>
+        /// 
+        /// </summary>
+#pragma region Stats
         public bool Alive
         {
             get
             {
-                throw new NotImplementedException();
+                return _alv;
             }
 
             set
             {
-                throw new NotImplementedException();
+                _alv = value;
             }
         }
 
@@ -41,12 +62,12 @@ namespace Combat
         {
             get
             {
-                throw new NotImplementedException();
+                return _atk;
             }
 
             set
             {
-                throw new NotImplementedException();
+                _atk = value;
             }
         }
 
@@ -54,29 +75,13 @@ namespace Combat
         {
             get
             {
-                throw new NotImplementedException();
+                return _def;
             }
 
             set
             {
-                throw new NotImplementedException();
+                _def = value;
             }
-        }
-
-        private FiniteStateMachine<UnitState> _fsm;
-        /// <summary>
-        /// make an fsm in this class and return it 
-        /// Usage: Combat.Unit.fsm.currentState?
-        /// </summary>
-        public UnitState c_State;
-        public FiniteStateMachine<UnitState> fsm
-        {
-            get
-            {
-                if (_fsm == null)
-                    SetupMachine();
-                return _fsm;                
-            } 
         }
 
         public float Health
@@ -96,12 +101,12 @@ namespace Combat
         {
             get
             {
-                throw new NotImplementedException();
+                return _mhp;
             }
 
             set
             {
-                throw new NotImplementedException();
+                _mhp = value;
             }
         }
 
@@ -118,31 +123,21 @@ namespace Combat
             }
         }
 
-    
-        public void GoToState(UnitState to)
+        public FiniteStateMachine<UnitState> fsm
         {
-            if (fsm.Transition(to))
-                InvokeCallbacks(to);
+            get
+            {
+                if (_fsm == null)
+                    SetupMachine();
+                return _fsm;
+            }
         }
+#pragma endregion
 
-        public void onInit()
-        {
-            
-        }
-
-        //this is the actual value
-        private float _hp, _spd;
-
-        //simulate some input
-        public float hp, spd;
-        public void onStart()
-        {
-            GetComponentInChildren<Animator>().SetTrigger("start");
-            //pull my abilities and populate the gui
-            //GuiManager.PopulateStats(hp, speed, favCookie);
-        }
-
-        //events        
+        /// <summary>
+        /// 
+        /// </summary>
+#pragma region Events
         public void onAttack()
         {
             Debug.Log("Attack! " + gameObject.name);
@@ -159,6 +154,23 @@ namespace Combat
             throw new NotImplementedException();
         }
 
+        public void onInit()
+        {
+
+        }
+
+        public void onStart()
+        {
+            GetComponentInChildren<Animator>().SetTrigger("start");
+            //pull my abilities and populate the gui
+            //GuiManager.PopulateStats(hp, speed, favCookie);
+        }
+#pragma endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+#pragma region Machine
         public void SetupMachine()
         {
             _fsm = new FiniteStateMachine<UnitState>(UnitState.INIT);
@@ -170,17 +182,21 @@ namespace Combat
             _fsm.AddTransition(UnitState.RESOLVE, UnitState.END);
         }
 
+        public void GoToState(UnitState to)
+        {
+            if (fsm.Transition(to))
+                InvokeCallbacks(to);
+        }
 
-        private Dictionary<UnitState, Callback> stateCallbacks = new Dictionary<UnitState, Callback>();
         public void RegisterCallback(UnitState state, Callback cb)
         {     
             stateCallbacks.Add(state, cb);
         }
+
         void InvokeCallbacks(UnitState state)
         {
             stateCallbacks[state]();
         }
-
-     
+#pragma endregion
     }
 }
