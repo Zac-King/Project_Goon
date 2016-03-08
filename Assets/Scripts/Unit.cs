@@ -1,10 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Combat 
-{//this is a user
+{
     public enum UnitState
     {
         INIT,
@@ -29,6 +29,8 @@ namespace Combat
         private float _mhp, _hp, _atk, _def, _spd;
         bool _alv;
 
+        Animator anim;
+
         private FiniteStateMachine<UnitState> _fsm;
         public UnitState c_State;
 
@@ -39,12 +41,13 @@ namespace Combat
         {
             RegisterCallback(UnitState.INIT, onInit);
             RegisterCallback(UnitState.START, onStart);
+            anim = gameObject.GetComponentInChildren<Animator>();
         }
 
         /// <summary>
         /// 
         /// </summary>
-#pragma region Stats
+
         public bool Alive
         {
             get
@@ -57,7 +60,7 @@ namespace Combat
                 _alv = value;
             }
         }
-
+ 
         public float Attack
         {
             get
@@ -132,12 +135,10 @@ namespace Combat
                 return _fsm;
             }
         }
-#pragma endregion
 
         /// <summary>
         /// 
         /// </summary>
-#pragma region Events
         public void onAttack()
         {
             Debug.Log("Attack! " + gameObject.name);
@@ -161,20 +162,19 @@ namespace Combat
 
         public void onStart()
         {
-            GetComponentInChildren<Animator>().SetTrigger("start");
+            anim.SetTrigger("start");
             //pull my abilities and populate the gui
             //GuiManager.PopulateStats(hp, speed, favCookie);
         }
-#pragma endregion
 
         /// <summary>
         /// 
         /// </summary>
-#pragma region Machine
         public void SetupMachine()
         {
             _fsm = new FiniteStateMachine<UnitState>(UnitState.INIT);
             _fsm.AddTransition(UnitState.INIT, UnitState.START);
+            _fsm.AddTransition(UnitState.START, UnitState.START);
             _fsm.AddTransition(UnitState.START, UnitState.SELECTION);
             _fsm.AddTransition(UnitState.SELECTION, UnitState.TARGET);
             _fsm.AddTransition(UnitState.TARGET, UnitState.SELECTION); //reflexive
@@ -197,6 +197,5 @@ namespace Combat
         {
             stateCallbacks[state]();
         }
-#pragma endregion
     }
 }

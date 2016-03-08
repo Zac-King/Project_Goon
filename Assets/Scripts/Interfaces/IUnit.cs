@@ -1,14 +1,16 @@
-﻿interface IUnit<T>
-{
-    FiniteStateMachine<T> fsm
-    { get; }
+﻿using System.Collections;
 
+interface IUnit<T>
+{
     void SetupMachine();
     void onHit();
     void onAttack();
     void onDeath();
     void onStart();
     void onInit();
+
+    FiniteStateMachine<T> fsm
+    { get; }
 
     // Unit Stats
     float MaxHealth
@@ -21,11 +23,9 @@
     { get; set; }
     float Speed
     { get; set; }
-    bool Alive
+    bool  Alive
     { get; set; } 
 }
-
-
 
 //struct Effect
 //{

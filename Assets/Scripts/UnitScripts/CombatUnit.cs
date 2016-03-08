@@ -15,8 +15,6 @@ public class CombatUnit : MonoBehaviour
     {
         EventSystem.AddSubscriber(MessageType.COMBAT, "Hit",    new Callback<int>(onHit));
         EventSystem.AddSubscriber(MessageType.COMBAT, "Dead",   new Callback(onDead));
-
-
     }
 
     // Update is called once per frame

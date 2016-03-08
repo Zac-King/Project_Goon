@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 419106}
   - 114: {fileID: 11496052}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: PlayerUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,6 +133,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a8d8fa60737fb419f1f67263a533bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mhp: 0
+  hp: 0
+  atk: 0
+  def: 0
+  spd: 0
   c_State: 0
 --- !u!1001 &100100000
 Prefab:
@@ -140,7 +145,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Name
+      value: PlayerUnit
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 125476}
