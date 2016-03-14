@@ -34,11 +34,6 @@ public class FiniteStateMachine<T> // <T> Generic
         return CurrentState;
     }
 
-    private void AddState(T t)                           //[Function]// Add a Generic to StateList
-    {
-        StateList.Add(t);
-    }
-
     private void LoadStates()                           //[Function]// Load All states into StateList
     {
         if (typeof(T) == typeof(Enum))

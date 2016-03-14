@@ -1,33 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class BattleFlow : MonoBehaviour
 {
-    List<Combat.Unit> battleUnits;
-    int currentTurnIndex = 0;
-
-    // Use this for initialization
-    void Start ()
+    //emulaqte a turn manager 
+    [SerializeField]
+    List<Combat.Unit> units;
+    void Start()
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	    if(Input.GetKeyUp(KeyCode.Alpha1))
-        {
-
-        }
-	}
-
-    void PopUnits()
-    {
-
+        units.AddRange(FindObjectsOfType<Combat.Unit>());
+        SortBySpeed();
     }
-    void OrderUnits()
-    {
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (units[0] != null)
+            {
+                units[0].GoToState(Combat.UnitState.START);
+                Combat.Unit t = units[0];
+                units.Remove(units[0]);
+                units.Add(t);
+            }
+        }
+    }
+
+    void SortBySpeed()
+    {
+        units = units.OrderByDescending(x => x.spd).ToList<Combat.Unit>();
     }
 }

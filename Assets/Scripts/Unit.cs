@@ -22,11 +22,11 @@ namespace Combat
     public class Unit : MonoBehaviour, IUnit<UnitState>
     {
         //simulate some input,  Only for testing 
-        public float  mhp,  hp,  atk,  def,  spd;
+        public int mhp,  hp,  atk,  def,  spd;
         bool  alv;
 
         //this is the actual value
-        private float _mhp, _hp, _atk, _def, _spd;
+        private int _mhp, _hp, _atk, _def, _spd;
         bool _alv;
 
         Animator anim;
@@ -36,14 +36,8 @@ namespace Combat
 
         private Dictionary<UnitState, Callback> stateCallbacks = new Dictionary<UnitState, Callback>();
 
-        // MonoBehaviour, i want this gone
-        void Start()
-        {
-            RegisterCallback(UnitState.INIT, onInit);
-            RegisterCallback(UnitState.START, onStart);
-            anim = gameObject.GetComponentInChildren<Animator>();
-        }
-
+        List<>
+        
         /// <summary>
         /// 
         /// </summary>
@@ -61,7 +55,7 @@ namespace Combat
             }
         }
  
-        public float Attack
+        public int Attack
         {
             get
             {
@@ -74,7 +68,7 @@ namespace Combat
             }
         }
 
-        public float Defense
+        public int Defense
         {
             get
             {
@@ -87,7 +81,7 @@ namespace Combat
             }
         }
 
-        public float Health
+        public int Health
         {
             get
             {
@@ -100,7 +94,7 @@ namespace Combat
             }
         }
 
-        public float MaxHealth
+        public int MaxHealth
         {
             get
             {
@@ -113,7 +107,7 @@ namespace Combat
             }
         }
 
-        public float Speed
+        public int Speed
         {
             get
             {
@@ -136,12 +130,15 @@ namespace Combat
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void onAttack()
+        // MonoBehaviour, i want this gone
+        void Awake()
         {
-            Debug.Log("Attack! " + gameObject.name);
+            onInit();
+        }
+
+        public void onAttack(Combat.Unit other)
+        {
+            throw new NotImplementedException();
         }
 
         public void onDeath()
@@ -157,29 +154,31 @@ namespace Combat
 
         public void onInit()
         {
-
+            //pull my abilities and populate the gui
+            //GuiManager.PopulateStats(hp, speed, favCookie);
+            RegisterCallback(UnitState.INIT, onInit);
+            RegisterCallback(UnitState.START, onStart);
+            anim = gameObject.GetComponentInChildren<Animator>();
         }
 
         public void onStart()
         {
             anim.SetTrigger("start");
-            //pull my abilities and populate the gui
-            //GuiManager.PopulateStats(hp, speed, favCookie);
+            _fsm.Transition(UnitState.SELECTION);
         }
 
         /// <summary>
-        /// 
+        /// Set up all valid Transistion
         /// </summary>
         public void SetupMachine()
         {
             _fsm = new FiniteStateMachine<UnitState>(UnitState.INIT);
-            _fsm.AddTransition(UnitState.INIT, UnitState.START);
-            _fsm.AddTransition(UnitState.START, UnitState.START);
-            _fsm.AddTransition(UnitState.START, UnitState.SELECTION);
+            _fsm.AddTransition(UnitState.INIT,      UnitState.START);
+            _fsm.AddTransition(UnitState.START,     UnitState.SELECTION);
             _fsm.AddTransition(UnitState.SELECTION, UnitState.TARGET);
-            _fsm.AddTransition(UnitState.TARGET, UnitState.SELECTION); //reflexive
-            _fsm.AddTransition(UnitState.TARGET, UnitState.RESOLVE);
-            _fsm.AddTransition(UnitState.RESOLVE, UnitState.END);
+            _fsm.AddTransition(UnitState.TARGET,    UnitState.SELECTION); //reflexive
+            _fsm.AddTransition(UnitState.TARGET,    UnitState.RESOLVE);
+            _fsm.AddTransition(UnitState.RESOLVE,   UnitState.END);
         }
 
         public void GoToState(UnitState to)
@@ -196,6 +195,16 @@ namespace Combat
         void InvokeCallbacks(UnitState state)
         {
             stateCallbacks[state]();
+        }
+
+        public void onAttack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void onSelection()
+        {
+            throw new NotImplementedException();
         }
     }
 }

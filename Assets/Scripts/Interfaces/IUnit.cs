@@ -8,36 +8,22 @@ interface IUnit<T>
     void onDeath();
     void onStart();
     void onInit();
+    void onSelection();
 
     FiniteStateMachine<T> fsm
     { get; }
 
     // Unit Stats
-    float MaxHealth
+    int MaxHealth
     { get; set; }
-    float Health
+    int Health
     { get; set; }
-    float Attack
-    { get; set; } 
-    float Defense
+    int Attack
     { get; set; }
-    float Speed
+    int Defense
+    { get; set; }
+    int Speed
     { get; set; }
     bool  Alive
     { get; set; } 
 }
-
-//struct Effect
-//{
-//    UnitStat effectedStat;
-//    int duration;
-//    float modifer;
-//}
-
-//enum UnitStat
-//{
-//    HEALTH,
-//    ATTACK,
-//    DEFENCE,
-//    SPEED
-//}
