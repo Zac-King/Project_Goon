@@ -1,36 +1,62 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 public class BattleFlow : MonoBehaviour
 {
-    //emulaqte a turn manager 
+    //emulate a turn manager
     [SerializeField]
-    List<Combat.Unit> units;
+    List<Combat.Unit> units  = new List<Combat.Unit>();
+    [SerializeField]
+    List<Combat.Unit> PartyA = new List<Combat.Unit>();
+    [SerializeField]
+    List<Combat.Unit> PartyB = new List<Combat.Unit>();
+
+    Combat.Unit CurrentUnit;
+
+    GameObject SelectorIcon;
+
+
     void Start()
     {
         units.AddRange(FindObjectsOfType<Combat.Unit>());
-        SortBySpeed();
+        foreach (Combat.Unit t in  units)
+        {
+            if (t.gameObject.tag == "Ally")
+                PartyA.Add(t);
+            else
+                PartyB.Add(t);
+        }
+
+        units = units.OrderByDescending(x => x.spd).ToList<Combat.Unit>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UnitAct()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        units[0].onAttack();
+
+        TurnOrder();
+    }
+
+    public void SelectUnit()
+    {
+        
+    }
+
+    void TurnOrder()
+    {
+        Combat.Unit t = units[0];
+        units.Remove(units[0]);
+        units.Add(t);
+
+        foreach (Combat.Unit u in units)
         {
-            if (units[0] != null)
+            if(u.Alive == false)
             {
-                units[0].GoToState(Combat.UnitState.START);
-                Combat.Unit t = units[0];
-                units.Remove(units[0]);
-                units.Add(t);
+                units.Remove(u);
             }
         }
-    }
-
-    void SortBySpeed()
-    {
-        units = units.OrderByDescending(x => x.spd).ToList<Combat.Unit>();
     }
 }

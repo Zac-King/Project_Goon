@@ -23,7 +23,7 @@ namespace Combat
     {
         //simulate some input,  Only for testing 
         public int mhp,  hp,  atk,  def,  spd;
-        bool  alv;
+        public bool  alv;
 
         //this is the actual value
         private int _mhp, _hp, _atk, _def, _spd;
@@ -36,12 +36,10 @@ namespace Combat
 
         private Dictionary<UnitState, Callback> stateCallbacks = new Dictionary<UnitState, Callback>();
 
-        List<>
-        
-        /// <summary>
-        /// 
-        /// </summary>
+        //List<Ability> UnitAbilities = new List<Ability>();
 
+        public Unit Target;
+        
         public bool Alive
         {
             get
@@ -133,23 +131,39 @@ namespace Combat
         // MonoBehaviour, i want this gone
         void Awake()
         {
+            Alive     = alv;
+            Attack    = atk;
+            Defense   = def;
+            Health    = hp;
+            MaxHealth = mhp;
+            Speed     = spd;
             onInit();
         }
 
-        public void onAttack(Combat.Unit other)
+        [ContextMenu("Attack Target")]
+        public void onAttack()
         {
-            throw new NotImplementedException();
+            Target.onHit(Attack);
         }
 
         public void onDeath()
         {
-            throw new NotImplementedException();
+            anim.SetTrigger("die");
+            //anim.enabled = false;
+            //Destroy(this.gameObject, 2f);
         }
 
-        public void onHit()
+        public void onHit(int damage)
         {
             //GuiManager.PopulateStats(hp, speed, favCookie);
-            throw new NotImplementedException();
+            anim.SetTrigger("hit");
+            Health -= damage;
+            if(Health <= 0)
+            {
+                Health = 0;
+                Alive = false;
+                onDeath();
+            }
         }
 
         public void onInit()
@@ -159,6 +173,10 @@ namespace Combat
             RegisterCallback(UnitState.INIT, onInit);
             RegisterCallback(UnitState.START, onStart);
             anim = gameObject.GetComponentInChildren<Animator>();
+
+            //Ability Attack = new Ability("Attack", false, UnitStat.HEALTH);
+            //Ability Defend = new Ability("Defend", true, UnitStat.DEFENCE);
+            //UnitAbilities.Add(Attack);
         }
 
         public void onStart()
@@ -195,11 +213,6 @@ namespace Combat
         void InvokeCallbacks(UnitState state)
         {
             stateCallbacks[state]();
-        }
-
-        public void onAttack()
-        {
-            throw new NotImplementedException();
         }
 
         public void onSelection()

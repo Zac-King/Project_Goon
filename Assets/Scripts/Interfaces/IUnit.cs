@@ -3,7 +3,7 @@
 interface IUnit<T>
 {
     void SetupMachine();
-    void onHit();
+    void onHit(int damage);
     void onAttack();
     void onDeath();
     void onStart();
@@ -24,6 +24,6 @@ interface IUnit<T>
     { get; set; }
     int Speed
     { get; set; }
-    bool  Alive
+    bool Alive
     { get; set; } 
 }

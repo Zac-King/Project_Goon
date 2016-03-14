@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Ability : MonoBehaviour
+public class Ability 
 {
-    private string name;
+    private string Name;
+    bool SelfTargeted;
+    Combat.UnitStat TargetedStat;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public Ability(string name, bool self, Combat.UnitStat stat)
+    {
+        Name         = name;
+        SelfTargeted = self;
+        TargetedStat = stat;
+    }
+
+
 }
