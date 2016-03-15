@@ -14,10 +14,9 @@ public class BattleFlow : MonoBehaviour
     [SerializeField]
     List<Combat.Unit> PartyB = new List<Combat.Unit>();
 
-    Combat.Unit CurrentUnit;
+    //GameObject SelectorIcon;
 
-    GameObject SelectorIcon;
-
+    private Gui testGUI = new Gui();
 
     void Start()
     {
@@ -31,6 +30,13 @@ public class BattleFlow : MonoBehaviour
         }
 
         units = units.OrderByDescending(x => x.spd).ToList<Combat.Unit>();
+
+        if (units[0].tag == "Ally")
+            testGUI.AllowAttack();
+        else
+        {
+            units[0].onAttack();
+        }
     }
 
     public void UnitAct()
@@ -40,13 +46,20 @@ public class BattleFlow : MonoBehaviour
         TurnOrder();
     }
 
-    public void SelectUnit()
+    public void SelectUnit(Combat.Unit a)   // Test For Button Selection
     {
-        
+        Debug.Log(units[0].name + " Hit " + units[0].Target.gameObject.name + " for " + units[0].Attack + " of Damage.");
+
+        units[0].Target = a;
+        units[0].onAttack();
+
+        testGUI.ResetButtons();
+        TurnOrder();
     }
 
     void TurnOrder()
     {
+        Debug.Log("TurnOver Hit");
         Combat.Unit t = units[0];
         units.Remove(units[0]);
         units.Add(t);
@@ -57,6 +70,30 @@ public class BattleFlow : MonoBehaviour
             {
                 units.Remove(u);
             }
+        }
+
+        /// Danger Ahead
+        /// Code in progress
+        /// Do not smell, touch, ingest, or even think about the following Code...
+
+        if(units[0].gameObject.tag != "Ally")
+        {
+            bool b = true;
+            while(b)
+            {
+                int i = Random.Range(0, 2);
+                if (PartyA[i].Alive == true)
+                {
+                    units[0].Target = PartyA[i];
+                    b = false;
+                }
+            }
+            TurnOrder();
+        }
+
+        else
+        {
+            testGUI.AllowAttack();
         }
     }
 }
