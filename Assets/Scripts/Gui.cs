@@ -2,8 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Gui : MonoBehaviour
+public class GUI : MonoBehaviour
 {
+    private static GUI _instance;
+    public static GUI instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = FindObjectOfType<GUI>();
+            return _instance;
+        }
+    }
     [SerializeField]
     private GameObject AttackButton;
     [SerializeField]
@@ -14,7 +24,13 @@ public class Gui : MonoBehaviour
     private GameObject Unit3Button;
 
     public List<Combat.Unit> Enemies;
-
+    void Awake()
+    {
+        Unit1Button.SetActive(false);
+        Unit2Button.SetActive(false);
+        Unit3Button.SetActive(false);
+        AttackButton.SetActive(false);
+    }
     void Start()
     {
         AttackButton.SetActive(true);
@@ -36,7 +52,7 @@ public class Gui : MonoBehaviour
     {
         AttackButton.SetActive(false);
 
-        if(Enemies[0].Alive == true)
+        if (Enemies[0].Alive == true)
             Unit1Button.SetActive(true);
         if (Enemies[1].Alive == true)
             Unit2Button.SetActive(true);

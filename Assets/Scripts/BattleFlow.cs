@@ -15,9 +15,14 @@ public class BattleFlow : MonoBehaviour
     List<Combat.Unit> PartyB = new List<Combat.Unit>();
 
     //GameObject SelectorIcon;
+    [SerializeField]
+    private Text WinnerTest;
 
-    private Gui testGUI = new Gui();
-
+    private GUI testGUI;
+    void Awake()
+    {
+        testGUI = GUI.instance;
+    }
     void Start()
     {
         units.AddRange(FindObjectsOfType<Combat.Unit>());
@@ -59,18 +64,20 @@ public class BattleFlow : MonoBehaviour
 
     void TurnOrder()
     {
-        Debug.Log("TurnOver Hit");
+        foreach (Combat.Unit u in units)
+        {
+            if (u.Alive == false)
+            {
+                units.Remove(u);
+                TurnOrder();
+            }
+        }
+
+        //Debug.Log("TurnOver Hit");
         Combat.Unit t = units[0];
         units.Remove(units[0]);
         units.Add(t);
-
-        foreach (Combat.Unit u in units)
-        {
-            if(u.Alive == false)
-            {
-                units.Remove(u);
-            }
-        }
+        
 
         /// Danger Ahead
         /// Code in progress
@@ -88,12 +95,20 @@ public class BattleFlow : MonoBehaviour
                     b = false;
                 }
             }
+            units[0].onAttack();
             TurnOrder();
         }
 
         else
         {
+            Debug.Log("Players Turn");
             testGUI.AllowAttack();
         }
+    }
+
+    bool WinnerDeclared()
+    {
+
+        return false;
     }
 }
