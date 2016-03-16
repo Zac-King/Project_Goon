@@ -22,6 +22,7 @@ public class BattleFlow : MonoBehaviour
     void Awake()
     {
         testGUI = GUI.instance;
+        WinnerTest.gameObject.SetActive(false);
     }
     void Start()
     {
@@ -64,51 +65,78 @@ public class BattleFlow : MonoBehaviour
 
     void TurnOrder()
     {
-        foreach (Combat.Unit u in units)
+        if (checkParty(PartyA) && checkParty(PartyB))
         {
-            if (u.Alive == false)
+
+
+
+            foreach (Combat.Unit u in units)
             {
-                units.Remove(u);
-                TurnOrder();
-            }
-        }
-
-        //Debug.Log("TurnOver Hit");
-        Combat.Unit t = units[0];
-        units.Remove(units[0]);
-        units.Add(t);
-        
-
-        /// Danger Ahead
-        /// Code in progress
-        /// Do not smell, touch, ingest, or even think about the following Code...
-
-        if(units[0].gameObject.tag != "Ally")
-        {
-            bool b = true;
-            while(b)
-            {
-                int i = Random.Range(0, 2);
-                if (PartyA[i].Alive == true)
+                if (u.Alive == false)
                 {
-                    units[0].Target = PartyA[i];
-                    b = false;
+                    units.Remove(u);
+                    TurnOrder();
                 }
             }
-            units[0].onAttack();
-            TurnOrder();
+
+            //Debug.Log("TurnOver Hit");
+            Combat.Unit t = units[0];
+            units.Remove(units[0]);
+            units.Add(t);
+
+
+            /// Danger Ahead
+            /// Code in progress
+            /// Do not smell, touch, ingest, or even think about the following Code...
+
+            if (units[0].gameObject.tag != "Ally")
+            {
+                bool b = true;
+                while (b)
+                {
+                    int i = Random.Range(0, 2);
+                    if (PartyA[i].Alive == true)
+                    {
+                        units[0].Target = PartyA[i];
+                        b = false;
+                    }
+                }
+                units[0].onAttack();
+                TurnOrder();
+            }
+
+            else
+            {
+                //Debug.Log("Players Turn");
+                testGUI.AllowAttack();
+            }
         }
 
         else
         {
-            Debug.Log("Players Turn");
-            testGUI.AllowAttack();
+            if (checkParty(PartyA))
+                WinnerTest.text = "Battle is Won";
+            
+            if (checkParty(PartyB))
+                WinnerTest.text = "Battle is Lost";
+
+
+            WinnerTest.gameObject.SetActive(true);
         }
     }
 
-    bool WinnerDeclared()
+    bool checkParty(List<Combat.Unit> party)   // Return False is Party is Dead  && Return True if at least one is alive
     {
+        int i = 0;
+        int memberCount = party.Count;
 
-        return false;
+        foreach(Combat.Unit n in party)
+            if(n.Alive == false)
+                i++;
+
+        if (i == memberCount)
+            return false;
+
+        return true;
     }
 }
